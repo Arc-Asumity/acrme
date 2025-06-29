@@ -1,11 +1,11 @@
 Usage: arcme [OPTIONS] [PATH]
 
 Options:
-  -h, --help, ?       Show this help message and exit.
-  -v, --version    Show the application version.
+  -h, --help, ?     Show this help message and exit.
+  -v, --version     Show the application version.
 
 Arguments:
-  PATH             The path to process. Only one path allowed.
+  PATH              The path to process. Only one path allowed.
 
 Description:
   This is an ACME client for automated certificate management.
