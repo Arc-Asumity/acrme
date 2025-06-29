@@ -1,0 +1,24 @@
+Usage: arcme [OPTIONS] [PATH]
+
+Options:
+  -h, --help, ?       Show this help message and exit.
+  -v, --version    Show the application version.
+
+Arguments:
+  PATH             The path to process. Only one path allowed.
+
+Description:
+  This is an ACME client for automated certificate management.
+
+Examples:
+  arcme -h
+  arcme --version
+  arcme /some/path
+
+Note:
+  Only one PATH argument is allowed.
+  Unknown options will cause an error.
+
+License:
+  Copyright (c) 2025 Arc Asumity
+  Licensed under the GPLv3 or later License.
