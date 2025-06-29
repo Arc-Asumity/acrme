@@ -8,12 +8,12 @@
 use std::env;
 
 pub struct InputArgs {
-    pub path: Option<String>,
+    pub config_path: Option<String>,
 }
 
 pub fn parse_args() -> Result<InputArgs, String> {
     let mut args: std::iter::Skip<std::env::Args> = env::args().skip(1);
-    let mut path: Option<String> = None;
+    let mut config_path: Option<String> = None;
     
     while let Some(arg) = args.next() {
         if arg == "-v" || arg == "--version" {
@@ -26,8 +26,8 @@ pub fn parse_args() -> Result<InputArgs, String> {
             if arg.starts_with("-") {
                 return Err(format!("Unknown argument: {}", arg));
             } else {
-                if path.is_none() {
-                    path = Some(arg);
+                if config_path.is_none() {
+                    config_path = Some(arg);
                 } else {
                     return Err(format!("Multiple path arguments detected: {}", arg));
                 }
@@ -36,6 +36,6 @@ pub fn parse_args() -> Result<InputArgs, String> {
     }
     
     Ok(InputArgs {
-        path,
+        config_path,
     })
 }
