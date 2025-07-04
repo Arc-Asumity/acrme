@@ -9,12 +9,13 @@ use std::collections::{HashMap, HashSet};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+#[serde(rename_all = 'kebab-case')]
 enum CertContent {
-    cert-only,
-    key-only,
-    cert-key,
-    cert-chain-only,
-    cert-chain-key,
+    CertOnly,
+    KeyOnly,
+    CertKey,
+    CertChainOnly,
+    CertChainKey,
 }
 
 #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
@@ -40,6 +41,7 @@ enum ConfigAcmeServer {
 }
 
 #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+#[serde(rename_all = 'kebab-case')]
 enum ChallengeType {
     Http01, // TODO HTTP-01 Chanllenge
     Dns01, // TODO DNS-01 Chanllenge
@@ -70,9 +72,9 @@ enum UserAndGroup {
 #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
 struct FileSave {
     path: String,
-    mode: Option(String),
-    gid: Option(UserAndGroup),
-    uid: Option(UserAndGroup),
+    mode: Option<String>,
+    gid: Option<UserAndGroup>,
+    uid: Option<UserAndGroup>,
 }
 
 #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
@@ -81,10 +83,10 @@ struct CentOutput {
     cert_type: CertType,
     cert_content: CertContent,
     from_server: ConfigAcmeServer,
-    chanllenge_type: ChallengeType,
+    challenge_type: ChallengeType,
     dns_type: DnsType,
-    reload_type: Option(ReloadType),
-    log_file: Option(FileSave),
+    reload_type: Option<ReloadType>,
+    log_file: Option<FileSave>,
 }
 
 #[derive(Deserialize, Debug)] 
@@ -95,7 +97,7 @@ struct ConfigFile {
 }
 
 fn parse_config(config_path: String) -> Result<ConfigFile, String> {
-    match std::fs::read_to_string(path) {
+    match std::fs::read_to_string(config_path) {
         Ok(json_str) => {
             match serde_json::from_str(json_str) {
                 Ok(parsed_config) => Ok(parsed_config),
