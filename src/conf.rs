@@ -47,18 +47,51 @@ enum ChallengeType {
 }
 
 #[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
-struct CentOutput {
+enum DnsType {
+    SystemDNS,
+    SoftwareDNS(String),
+    DoT(String),
+    DoH(String),
+}
+
+#[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+enum ReloadType {
+    CLI(String),
+    UnixSocket(String),
+    NetSocket(u16, String),
+}
+
+#[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+enum UserAndGroup {
+    ID(u32),
+    Name(String),
+}
+
+#[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+struct FileSave {
     path: String,
+    mode: Option(String),
+    gid: Option(UserAndGroup),
+    uid: Option(UserAndGroup),
+}
+
+#[derive(Deserialize, Debug, Hash, PartialEq, Eq)]
+struct CentOutput {
+    cert_file: FileSave,
     cert_type: CertType,
     cert_content: CertContent,
     from_server: ConfigAcmeServer,
     chanllenge_type: ChallengeType,
+    dns_type: DnsType,
+    reload_type: Option(ReloadType),
+    log_file: Option(FileSave),
 }
 
 #[derive(Deserialize, Debug)] 
 struct ConfigFile {
+    user_id: UserAndGroup,
     acme_servers: Option<HashMap<String, AcmeServer>>,
-    cert_output: HashSet<CentOutput>,
+    cert_output: HashMap<String, CentOutput>,
 }
 
 fn parse_config(config_path: String) -> Result<ConfigFile, String> {
