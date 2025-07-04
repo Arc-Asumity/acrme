@@ -14,7 +14,7 @@ pub struct InputArgs {
 pub fn parse_args() -> Result<InputArgs, String> {
     let mut args: std::iter::Skip<std::env::Args> = env::args().skip(1);
     let mut config_path: Option<String> = None;
-    
+
     while let Some(arg) = args.next() {
         if arg == "-v" || arg == "--version" {
             println!("Arcme ACME Client Version {}", env!("CARGO_PKG_VERSION"));
@@ -34,8 +34,6 @@ pub fn parse_args() -> Result<InputArgs, String> {
             }
         }
     }
-    
-    Ok(InputArgs {
-        config_path,
-    })
+
+    Ok(InputArgs { config_path })
 }
