@@ -12,11 +12,5 @@ fn main() {
 }
 
 fn init() {
-    let parsed_args: arg::InputArgs = match arg::parse_args() {
-        Ok(args) => args,
-        Err(e) => {
-            eprintln!("Error parsing arguments: {}", e);
-            std::process::exit(1);
-        }
-    };
+    arg::handle_cli();
 }

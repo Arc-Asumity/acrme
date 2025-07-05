@@ -6,7 +6,7 @@ license = "GPL-3.0-or-later"
 edition = "2024"
 
 [dependencies]
-clap = "4.5.40"
+clap = { version = "4.5.40", features = ["cargo", "derive"] }
 fern = "0.7.1"
 libc = "0.2.174"
 log = "0.4.27"

@@ -5,35 +5,113 @@
 // src/arg.rs
 // This module handles command-line argument parsing.
 
-use std::env;
+use clap::{Arg, ArgAction, Command};
 
-pub struct InputArgs {
-    pub config_path: Option<String>,
+fn spawn_common_help(cmd: Command) -> Command {
+    cmd
+        .after_help("Author: Arc Asumity <arcasumity@hotmail.com>\n\nLicense:\n  Copyright (c) 2025 Arc Asumity\n  Licensed under the GPLv3 or later License.")
+        .arg_required_else_help(true)
 }
 
-pub fn parse_args() -> Result<InputArgs, String> {
-    let mut args: std::iter::Skip<std::env::Args> = env::args().skip(1);
-    let mut config_path: Option<String> = None;
+fn build_cli() -> Command {
+    spawn_common_help(
+        Command::new("Arcme")
+            .version(clap::crate_version!())
+            .author(clap::crate_authors!())
+            .about("This is an ACME client for automated certificate management.")
+            .disable_version_flag(true)
+            // Version
+            .arg(
+                Arg::new("version")
+                    .long("version")
+                    .short('V')
+                    .help("Show version information")
+                    .action(ArgAction::SetTrue),
+            )
+            // Configure
+            .subcommand(spawn_common_help(
+                Command::new("config")
+                    .about("Manage configuration files and options")
+                    .subcommand(spawn_common_help(
+                        Command::new("list")
+                            .about("List all available configuration items")
+                            .arg(
+                                Arg::new("path")
+                                    .help("Path to the configuration file")
+                                    .required(true)
+                                    .value_name("PATH"),
+                            ),
+                    ))
+                    .subcommand(spawn_common_help(
+                        Command::new("new")
+                            .about("Create a new configuration file")
+                            .arg(
+                                Arg::new("path")
+                                    .help("Path to the configuration file")
+                                    .required(true)
+                                    .value_name("PATH"),
+                            ),
+                    ))
+                    .subcommand(spawn_common_help(
+                        Command::new("change")
+                            .about("Modify an existing configuration file")
+                            .arg(
+                                Arg::new("path")
+                                    .help("Path to the configuration file")
+                                    .required(true)
+                                    .value_name("PATH"),
+                            ),
+                    )),
+            ))
+            .subcommand(spawn_common_help(
+                    Command::new("run")
+                    .about("Run the program")
+                    .arg(
+                        Arg::new("path")
+                        .help("Configuration file currently in use at runtime")
+                        .required(true)
+                        .value_name("PATH"),
+                    ),
+            ))
+            .subcommand(spawn_common_help(
+                    Command::new("reload")
+                    .about("Reload the configuration for a running process")
+                    .arg(
+                        Arg::new("socket")
+                        .help("Path to the Unix socket used to communicate with the running process")
+                        .required(true)
+                        .value_name("SOCKET"),
+                    ),
+            ))
+            .subcommand(spawn_common_help(
+                    Command::new("stop")
+                    .about("Stop a running process")
+                    .arg(
+                        Arg::new("socket")
+                        .help("Path to the Unix socket used to stop the running process")
+                        .required(true)
+                        .value_name("SOCKET"),
+                    ),
+            ))
+            .subcommand(spawn_common_help(
+                    Command::new("log")
+                    .about("View the log files of a running process")
+                    .arg(
+                        Arg::new("socket")
+                        .help("Path to the Unix socket used to retrieve log output")
+                        .required(true)
+                        .value_name("SOCKET"),
+                    )
+                    .arg(
+                        Arg::new("id")
+                        .help("Log ID to display")
+                        .required(false)
+                        .value_name("ID"),
+                    ),
+            ))
+    )
+}
 
-    while let Some(arg) = args.next() {
-        if arg == "-v" || arg == "--version" {
-            println!("Arcme ACME Client Version {}", env!("CARGO_PKG_VERSION"));
-            std::process::exit(0);
-        } else if arg == "-h" || arg == "--help" || arg == "?" {
-            println!("{}", include_str!("../text/help.txt"));
-            std::process::exit(0);
-        } else {
-            if arg.starts_with("-") {
-                return Err(format!("Unknown argument: {}", arg));
-            } else {
-                if config_path.is_none() {
-                    config_path = Some(arg);
-                } else {
-                    return Err(format!("Multiple path arguments detected: {}", arg));
-                }
-            }
-        }
-    }
-
-    Ok(InputArgs { config_path })
+pub fn handle_cli() {
+    let matches = build_cli().get_matches();
 }
