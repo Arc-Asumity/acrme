@@ -85,6 +85,7 @@ struct CentOutput {
     from_server: ConfigAcmeServer,
     challenge_type: ChallengeType,
     dns_type: DnsType,
+    renew_threshold: String,
     reload_type: Option<ReloadType>,
     log_file: Option<FileSave>,
 }
@@ -92,18 +93,20 @@ struct CentOutput {
 #[derive(Deserialize, Debug)] 
 struct ConfigFile {
     user_id: UserAndGroup,
+    check_interval: Option<String>,
+    log_file: Option<FileSave>,
     acme_servers: Option<HashMap<String, AcmeServer>>,
     cert_output: HashMap<String, CentOutput>,
 }
 
-fn parse_config(config_path: String) -> Result<ConfigFile, String> {
+fn parse_config(config_path: &str) -> Result<ConfigFile, String> {
     match std::fs::read_to_string(config_path) {
         Ok(json_str) => {
-            match serde_json::from_str(json_str) {
+            match serde_json::from_str(&json_str) {
                 Ok(parsed_config) => Ok(parsed_config),
                 Err(e) => Err(format!("Deserialization error: {}", e))
             }
         }
-        Err(e) => Err(format!("Failed read configuration file: {}", e))
+        Err(e) => Err(format!("Failed to read configuration file: {}", e))
     }
 }
