@@ -114,4 +114,49 @@ fn build_cli() -> Command {
 
 pub fn handle_cli() {
     let matches = build_cli().get_matches();
+    if matches.get_flag("version") {
+        println!("Arcme ACME Client Version {}\nCopyright (c) 2025 Arc Asumity\nLicensed under the GPLv3 or later License.", clap::crate_version!());
+        return;
+    }
+    match matches.subcommand() {
+        Some(("config", sub_m)) => {
+            match sub_m.subcommand() {
+                Some(("list", sub_sub_m)) => {
+                    let path = sub_sub_m.get_one::<String>("path").unwrap();
+                    // TODO `config list`
+                }
+                Some(("new", sub_sub_m)) => {
+                    let path = sub_sub_m.get_one::<String>("path").unwrap();
+                    // TODO `config new`
+                }
+                Some(("change", sub_sub_m)) => {
+                    let path = sub_sub_m.get_one::<String>("path").unwrap();
+                    // TODO `config change`
+                }
+                _ => {
+                    println!("[config]: Unknown Arg");
+                }
+            }
+        }
+        Some (("run", sub_m)) => {
+            let path = sub_m.get_one::<String>("path").unwrap();
+            // TODO `run`
+        }
+        Some (("stop", sub_m)) => {
+            let socket = sub_m.get_one::<String>("socket").unwrap();
+            // TODO `stop`
+        }
+        Some (("relaod", sub_m)) => {
+            let socket = sub_m.get_one::<String>("socket").unwrap();
+            // TODO `reload`
+        }
+        Some (("log", sub_m)) => {
+            let socket = sub_m.get_one::<String>("socket").unwrap();
+            let id = sub_m.get_one::<String>("id");
+            // TODO `log`
+        }
+        _ => {
+            println!("[config]: Unknown Arg");
+        }
+    }
 }
